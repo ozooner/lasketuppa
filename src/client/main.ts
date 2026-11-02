@@ -613,7 +613,7 @@ function buildAge(now = Date.now()): string {
 async function start() {
   // On phones the background text starts collapsed so the map keeps most of the screen.
   if (window.matchMedia("(max-width: 899px)").matches) $<HTMLDetailsElement>("about").open = false;
-  console.log(`laskesisse build ${__BUILD_TIME__} age ${buildAge()}${__BUILD_COMMIT__ ? ` (${__BUILD_COMMIT__})` : ""}`);
+  console.log(`lasketuppa build ${__BUILD_TIME__} age ${buildAge()}${__BUILD_COMMIT__ ? ` (${__BUILD_COMMIT__})` : ""}`);
   buildRuleToggles();
 
   for (const tab of document.querySelectorAll<HTMLButtonElement>(".tabs [role=tab]")) {

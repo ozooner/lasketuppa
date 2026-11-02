@@ -1,13 +1,14 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
+  // Worker and D1 keep the original name "laskesisse": renaming them would create a new Worker and an empty database.
   "name": "laskesisse",
   "main": "src/worker/index.ts",
   "compatibility_date": "2026-10-01",
   "observability": { "enabled": true },
 
-  // Enable once the laskesisse.ee zone is on Cloudflare (nameservers pointed to Cloudflare);
+  // Enable once the lasketuppa.ee zone is on Cloudflare (nameservers pointed to Cloudflare);
   // a deploy fails while the zone is missing. Wrangler then creates the DNS record and certificate.
-  // "routes": [{ "pattern": "laskesisse.ee", "custom_domain": true }],
+  // "routes": [{ "pattern": "lasketuppa.ee", "custom_domain": true }],
 
   // The Vite build outputs the frontend; the Worker only handles /api/*.
   "assets": {

@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Guidance for coding agents and developers working on **laskesisse.ee**: a map of households expecting *mardisandid* (10 November) and *kadrisandid* (25 November). Households list their house with a time window and house rules; listings are deleted automatically once the day has passed. What the project is for is described in Estonian in [README.md](README.md).
+Guidance for coding agents and developers working on **lasketuppa.ee**: a map of households expecting *mardisandid* (10 November) and *kadrisandid* (25 November). Households list their house with a time window and house rules; listings are deleted automatically once the day has passed. What the project is for is described in Estonian in [README.md](README.md).
 
 ## Conventions
 
@@ -9,7 +9,7 @@ Guidance for coding agents and developers working on **laskesisse.ee**: a map of
 - **Runtime settings live in the Cloudflare dashboard,** not in `wrangler.jsonc` (see Configuration). `keep_vars: true` keeps dashboard variables across deploys; never add those names back under `vars`.
 - **Migrations run after the new code is live** (`npm run deploy` = `wrangler deploy && wrangler d1 migrations apply`), so each migration must work with the previous version of the code: add columns or tables, don't rename or drop in the same release.
 - **Before pushing,** run `npm run build` (type-checks client and Worker, then builds) and `npx wrangler deploy --dry-run`.
-- The browser console logs `laskesisse build <time> (<commit>)` on load; use it to tell which deploy a browser is running.
+- The browser console logs `lasketuppa build <time> age <dd hh:mm:ss> (<commit>)` on load; use it to tell which deploy a browser is running.
 - Node 24 (pinned to 24.22.1 in `.node-version`, which Workers Builds and nvm/fnm pick up).
 
 ## Stack
@@ -72,7 +72,7 @@ Set in *Worker → Settings → Variables and Secrets*. Locally, put them in `.d
 1. In [Google Cloud Console](https://console.cloud.google.com/), create a project and attach a billing account (required even within the free monthly usage).
 2. Enable **Maps JavaScript API** and **Places API (New)**.
 3. Create an API key under *APIs & Services → Credentials* and restrict it:
-   - Application restriction **Websites**: `https://laskesisse.ee/*`, `https://laskesisse.<your-subdomain>.workers.dev/*` (preview builds) and `http://localhost:5173/*` for development.
+   - Application restriction **Websites**: `https://lasketuppa.ee/*`, `https://laskesisse.<your-subdomain>.workers.dev/*` (preview builds) and `http://localhost:5173/*` for development.
    - API restriction: Maps JavaScript API and Places API (New) only.
 4. Under *Google Maps Platform → Map management → Create Map ID*: type **JavaScript**, **Vector**. One Map ID is enough: the app asks for the dark variant on the Mardi tab and the light one on Kadri. Without it the app uses Google's testing-only `DEMO_MAP_ID`. A custom style can be attached to the Map ID later (*Map styles*) without code changes.
 5. Recommended: set a budget alert on the billing account.
@@ -84,11 +84,11 @@ Nothing to do. `wrangler.jsonc` names the database `laskesisse` without an id, s
 
 ### 3. Workers Builds (the deploy pipeline)
 
-In the Cloudflare dashboard: **Workers & Pages → Create → Import a repository**, connect GitHub and pick `ozooner/laskesisse`.
+In the Cloudflare dashboard: **Workers & Pages → Create → Import a repository**, connect GitHub and pick `ozooner/lasketuppa`.
 
 | Setting | Value |
 | --- | --- |
-| Project name | `laskesisse` (must match `name` in `wrangler.jsonc`) |
+| Project name | `laskesisse` (must match `name` in `wrangler.jsonc`; the Worker and D1 database keep this original name on purpose) |
 | Production branch | `main` |
 | Build command | `npm run build` |
 | Deploy command | `npm run deploy` (`wrangler deploy`, then D1 migrations) |
@@ -102,26 +102,26 @@ Migrations run right after the new code goes live, so write them to be compatibl
 
 ### 4. Turnstile (optional, recommended before launch)
 
-1. Dashboard → **Turnstile → Add widget**, add the hostnames `laskesisse.ee` and `localhost`.
+1. Dashboard → **Turnstile → Add widget**, add the hostnames `lasketuppa.ee` and `localhost`.
 2. Add the **site key** as variable `TURNSTILE_SITE_KEY` in the dashboard (*Variables and Secrets*). Include your `*.workers.dev` hostname in the widget while testing there.
 3. Add the **secret key** as type **Secret**, name `TURNSTILE_SECRET_KEY`.
 
 Without the secret, the server skips the check (handy locally).
 
-### 5. Domain: laskesisse.ee
+### 5. Domain: lasketuppa.ee
 
-1. In the Cloudflare dashboard, **Add a domain** → `laskesisse.ee` (Free plan is fine). Cloudflare shows two nameservers.
+1. In the Cloudflare dashboard, **Add a domain** → `lasketuppa.ee` (Free plan is fine). Cloudflare shows two nameservers.
 2. At your .ee registrar, replace the domain's nameservers with those two. Propagation usually takes minutes to a few hours.
-3. Once the zone shows as **Active**, uncomment `routes` in `wrangler.jsonc`. The next deploy attaches `laskesisse.ee` to the Worker, including DNS record and TLS certificate.
-4. Optional `www.laskesisse.ee`: add a proxied DNS record `www` (CNAME to `laskesisse.ee`) and a **Redirect Rule** (*Rules → Redirect Rules*, template "Redirect from WWW to root") so there is one canonical address.
+3. Once the zone shows as **Active**, uncomment `routes` in `wrangler.jsonc`. The next deploy attaches `lasketuppa.ee` to the Worker, including DNS record and TLS certificate.
+4. Optional `www.lasketuppa.ee`: add a proxied DNS record `www` (CNAME to `lasketuppa.ee`) and a **Redirect Rule** (*Rules → Redirect Rules*, template "Redirect from WWW to root") so there is one canonical address.
 
 ### 6. Cloudflare Access (keep it private before launch)
 
 Access sits in front of the Worker, so nobody reaches the site or `/api` without logging in. No code changes are needed.
 
 - **workers.dev and preview URLs:** *Worker → Settings → Domains & Routes*, on the `workers.dev` and **Preview URLs** rows choose **Enable Cloudflare Access**. Then click **Manage Cloudflare Access** and set the policy to allow your e-mail addresses (one-time PIN login works without any identity provider).
-- **laskesisse.ee (once attached):** *Zero Trust → Access → Applications → Add an application → Self-hosted*, domain `laskesisse.ee`, policy **Allow** with *Emails* = your testers. Add `www.laskesisse.ee` too if you created it.
-- **Launch:** delete the Access application (or switch its policy to *Bypass → Everyone*) for `laskesisse.ee`. Keeping Access on the preview URLs is fine.
+- **lasketuppa.ee (once attached):** *Zero Trust → Access → Applications → Add an application → Self-hosted*, domain `lasketuppa.ee`, policy **Allow** with *Emails* = your testers. Add `www.lasketuppa.ee` too if you created it.
+- **Launch:** delete the Access application (or switch its policy to *Bypass → Everyone*) for `lasketuppa.ee`. Keeping Access on the preview URLs is fine.
 
 ## Local development
 

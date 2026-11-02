@@ -1,6 +1,6 @@
-# Laske sisse!
+# Laske tuppa!
 
-**[laskesisse.ee](https://laskesisse.ee)** on kaart peredest, kes ootavad mardi- ja kadripäeval sante.
+**[lasketuppa.ee](https://lasketuppa.ee)** on kaart peredest, kes ootavad mardi- ja kadripäeval sante.
 
 ## Miks
 
@@ -8,7 +8,7 @@ Mardipäev ja kadripäev on vanad eesti rahvakalendri tähtpäevad. Sandid käiv
 
 Viimastel aastatel on Halloween seda kommet tasapisi välja tõrjumas. Lapsed teavad küll „komm või pomm“ hüüdu, aga mardilaul jääb laulmata. Üks põhjus on lihtne: ei tea, millise ukse taga sante oodatakse ja kuhu tasub koputada.
 
-Laske sisse tahab selle mure lahendada ja aidata kommet elus hoida. Kui pered näitavad kaardil, et nende uks on avatud, on lastel ja vanematel julgem sandiks minna.
+Laske tuppa tahab selle mure lahendada ja aidata kommet elus hoida. Kui pered näitavad kaardil, et nende uks on avatud, on lastel ja vanematel julgem sandiks minna.
 
 ## Tähtpäevad
 
