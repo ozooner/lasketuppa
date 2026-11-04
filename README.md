@@ -15,7 +15,9 @@ Laske tuppa tahab selle mure lahendada ja aidata kommet elus hoida. Kui pered n�
 - **Mardipäev, 10. november.** Mardisandid on riietatud tumedalt ja kulunult, sageli maskide ja habemetega. Nad soovivad perele viljaõnne ja jõukust.
 - **Kadripäev, 25. november.** Kadrisandid on valgetes riietes. Nad soovivad karjaõnne ja head talve.
 
-Lehel on mõlema päeva jaoks oma vahekaart. Vaikimisi avaneb see, mis on järgmisena tulemas, koos lühikese selgituse ja päevade loendusega. Mardipäeva vaade on tumedates villastes toonides, kadripäeva oma valge linase ja punasega, nagu sandidki.
+Sandid käivad perest perre tähtpäeva eelõhtul: **mardisandid 9. novembri** ja **kadrisandid 24. novembri** õhtul. Seepärast on lehel kõik kuupäevad just need õhtud.
+
+Lehel on mõlema õhtu jaoks oma vahekaart („Mardisandid“ ja „Kadrisandid“). Vaikimisi avaneb see, mis on järgmisena tulemas, koos lühikese selgituse ja päevade loendusega. Mardipäeva vaade on tumedates villastes toonides, kadripäeva oma valge linase ja punasega, nagu sandidki.
 
 ## Kuidas see töötab
 

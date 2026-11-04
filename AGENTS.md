@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Guidance for coding agents and developers working on **lasketuppa.ee**: a map of households expecting *mardisandid* (10 November) and *kadrisandid* (25 November). Households list their house with a time window and house rules; listings are deleted automatically once the day has passed. What the project is for is described in Estonian in [README.md](README.md).
+Guidance for coding agents and developers working on **lasketuppa.ee**: a map of households expecting *mardisandid* and *kadrisandid*. Sandid go round on the evening before the feast day (mardipäev 10 Nov, kadripäev 25 Nov), so every date in the app is that evening: **9 Nov** and **24 Nov** (`EVENTS` in `src/shared/events.ts`). Households list their house with a time window and house rules; listings are deleted automatically once the day has passed. What the project is for is described in Estonian in [README.md](README.md).
 
 ## Conventions
 
@@ -43,7 +43,7 @@ Set in *Worker → Settings → Variables and Secrets*. Locally, put them in `.d
 
 ## Behaviour
 
-- The default tab is the next upcoming event in Europe/Tallinn time (Mardipäev until 10 Nov, then Kadripäev until 25 Nov, then next year's Mardipäev). `#mardipaev` / `#kadripaev` in the URL selects a tab (the older `#mardi` / `#kadri` still work).
+- Tabs are "Mardisandid 9.11" and "Kadrisandid 24.11"; the countdown reads "N päeva mardisantideni / kadrisantideni". The default tab is the next upcoming evening in Europe/Tallinn time (Mardisandid until 9 Nov, then Kadrisandid until 24 Nov, then next year's). Migration `0004_evening_before.sql` moved listings stored under the feast days to the evening before. `#mardipaev` / `#kadripaev` in the URL selects a tab (the older `#mardi` / `#kadri` still work).
 - Each tab has its own palette: dark wool and straw for Mardi, white linen and red for Kadri. Each can have its own Google Map ID (style).
 - "Ootan sante" opens a form that first tells the user their address is deleted automatically when the day has passed. Address comes from Places Autocomplete; the pin can be dragged to the exact door.
 - No accounts. Creating a listing returns a private edit link (`/?muuda=<id>.<token>`), which is also remembered in the browser. Only a SHA-256 hash of the token is stored.

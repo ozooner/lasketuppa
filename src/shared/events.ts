@@ -3,9 +3,26 @@ export type EventKey = "mardi" | "kadri";
 export const EVENT_KEYS: readonly EventKey[] = ["mardi", "kadri"];
 export const TIME_ZONE = "Europe/Tallinn";
 
-export const EVENTS: Record<EventKey, { month: number; day: number; name: string; untilWord: string; visitors: string }> = {
-  mardi: { month: 11, day: 10, name: "Mardipäev", untilWord: "mardipäevani", visitors: "Mardisandid" },
-  kadri: { month: 11, day: 25, name: "Kadripäev", untilWord: "kadripäevani", visitors: "Kadrisandid" },
+/**
+ * Sandid go round on the evening before the feast day (mardipäev 10.11, kadripäev 25.11),
+ * so every date in the app is that evening: 9.11 and 24.11.
+ */
+export const EVENTS: Record<EventKey, {
+  month: number;
+  day: number;
+  name: string;
+  untilWord: string;
+  evening: string;
+  eveningPartitive: string;
+}> = {
+  mardi: {
+    month: 11, day: 9, name: "Mardisandid", untilWord: "mardisantideni",
+    evening: "mardisantide õhtu", eveningPartitive: "mardisantide õhtut",
+  },
+  kadri: {
+    month: 11, day: 24, name: "Kadrisandid", untilWord: "kadrisantideni",
+    evening: "kadrisantide õhtu", eveningPartitive: "kadrisantide õhtut",
+  },
 };
 
 const MONTHS = [
@@ -53,7 +70,7 @@ export function formatDate(iso: string): string {
   return `${d}. ${MONTHS[m - 1]}`;
 }
 
-/** "10.11.2026" */
+/** "9.11.2026" */
 export function formatShort(iso: string): string {
   const [y, m, d] = iso.split("-");
   return `${d}.${m}.${y}`;

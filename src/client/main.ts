@@ -31,9 +31,9 @@ const HISTORY: Record<EventKey, string> = {
 
 const DESCRIPTIONS: Record<EventKey, string> = {
   mardi:
-    "Mardipäeval käivad mardisandid perest perre. Nad laulavad, tantsivad ja soovivad perele head ning saavad vastu ande. Kui ootad sante, pane oma maja kaardile.",
+    "Mardipäev on 10. novembril, kuid mardisandid käivad perest perre juba eelmisel õhtul, 9. novembril. Seepärast on sellel lehel kirjas just see õhtu. Sandid laulavad, tantsivad ja soovivad perele head ning saavad vastu ande. Kui ootad sante, pane oma maja kaardile.",
   kadri:
-    "Kadripäeval käivad valgetes riietes kadrisandid. Nad laulavad, soovivad karjaõnne ja head talve ning saavad vastu ande. Kui ootad sante, pane oma maja kaardile.",
+    "Kadripäev on 25. novembril, kuid kadrisandid käivad perest perre juba eelmisel õhtul, 24. novembril. Seepärast on sellel lehel kirjas just see õhtu. Valgetes riietes sandid laulavad, soovivad karjaõnne ja head talve ning saavad vastu ande. Kui ootad sante, pane oma maja kaardile.",
 };
 
 // URL hash for each tab. The short #mardi / #kadri from earlier links still work.
@@ -76,10 +76,10 @@ function setEvent(event: EventKey) {
 
   const date = eventDate(event, state.today);
   const days = daysBetween(state.today, date);
-  const { name, untilWord } = EVENTS[event];
+  const { untilWord, evening } = EVENTS[event];
   $("count").innerHTML =
-    days === 0 ? `Täna on ${name.toLowerCase()}!`
-    : days === 1 ? `Homme on ${name.toLowerCase()}!`
+    days === 0 ? `Täna on ${evening}!`
+    : days === 1 ? `Homme on ${evening}!`
     : `<b>${days}</b>päeva ${untilWord}`;
   $("history").textContent = HISTORY[event];
   $("desc").textContent = DESCRIPTIONS[event];
@@ -429,7 +429,7 @@ async function openSheet() {
   lastFocus = document.activeElement as HTMLElement | null;
   const event = state.event;
   const date = eventDate(event, state.today);
-  const { name } = EVENTS[event];
+  const { eveningPartitive } = EVENTS[event];
   let mine: Mine | undefined = state.mine[event];
   let house: House | null = null;
 
@@ -446,7 +446,7 @@ async function openSheet() {
 
   $("sheet-title").textContent = mine ? "Minu maja" : "Ootan sante";
   $("delete-notice").textContent =
-    `Pane tähele: sinu lisatud aadress kustutatakse automaatselt, kui ${name.toLowerCase()} on möödas (${formatShort(date)}).`;
+    `Pane tähele: sinu lisatud aadress kustutatakse automaatselt pärast ${eveningPartitive} (${formatShort(date)}).`;
   $("submit").textContent = mine ? "Salvesta muudatused" : "Lisa kaardile";
   $("delete").hidden = !mine;
   $("delete-confirm").hidden = true;
@@ -549,9 +549,9 @@ async function submitForm(e: SubmitEvent) {
 }
 
 function showDone(event: EventKey, mine: Mine) {
-  const { name, visitors } = EVENTS[event];
+  const { name, eveningPartitive } = EVENTS[event];
   $("done-text").textContent =
-    `${visitors} näevad sind nüüd kaardil. Kustutame sinu maja kaardilt automaatselt, kui ${name.toLowerCase()} on möödas (${formatShort(mine.eventDate)}).`;
+    `${name} näevad sind nüüd kaardil. Kustutame sinu maja kaardilt automaatselt pärast ${eveningPartitive} (${formatShort(mine.eventDate)}).`;
   $<HTMLInputElement>("edit-link").value = editLink(mine);
   $("copy-link").textContent = "Kopeeri";
   form.hidden = true;
