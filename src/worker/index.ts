@@ -134,7 +134,8 @@ async function createHouse(request: Request, env: Env): Promise<Response> {
     ).bind(...values).run();
   }
   if (result.meta.changes === 0) {
-    throw new HttpError(429, `Sellelt võrgult on sellele õhtule juba lisatud ${MAX_PER_IP} maja. Rohkem ei saa lisada.`);
+    // Deliberately vague, so the limit is not advertised to someone trying to get around it.
+    throw new HttpError(429, "Viga, proovi hiljem uuesti.");
   }
 
   return json({ id, editToken: token, eventDate: date }, 201);
