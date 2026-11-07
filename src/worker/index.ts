@@ -32,6 +32,10 @@ class HttpError extends Error {
 // A listing disappears from the map after this many reports, until someone looks at it.
 const REPORTS_TO_HIDE = 3;
 
+// Against fake data: at most this many listings per IP address for the same evening.
+// Leaves room for a household listing itself for both evenings, or two households on one network.
+const MAX_PER_IP = 2;
+
 // Rough bounding box of Estonia, islands included.
 const BOUNDS = { minLat: 57.4, maxLat: 59.9, minLng: 21.5, maxLng: 28.3 };
 
@@ -105,13 +109,33 @@ async function createHouse(request: Request, env: Env): Promise<Response> {
   const id = crypto.randomUUID();
   const token = randomToken();
   const date = eventDate(body.event, tallinnToday());
-  await env.DB.prepare(
-    `INSERT INTO houses (id, event, event_date, address, lat, lng, time_from, time_to, rules, note, edit_token_hash)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-  ).bind(
+  const values = [
     id, body.event, date, input.address, input.lat, input.lng,
     input.timeFrom, input.timeTo, JSON.stringify(input.rules), input.note, await sha256(token),
-  ).run();
+  ];
+  const ip = request.headers.get("CF-Connecting-IP");
+  // Only a hash of the IP is kept, salted with the date, and it is deleted with the listing.
+  const ipHash = ip ? await sha256(`${date}|${ip}`) : null;
+
+  // One statement, so two quick submissions cannot both slip under the limit.
+  let result: D1Result;
+  try {
+    result = await env.DB.prepare(
+      `INSERT INTO houses (id, event, event_date, address, lat, lng, time_from, time_to, rules, note, edit_token_hash, ip_hash)
+       SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+       WHERE ? IS NULL OR (SELECT COUNT(*) FROM houses WHERE ip_hash = ? AND event_date = ?) < ?`,
+    ).bind(...values, ipHash, ipHash, ipHash, date, MAX_PER_IP).run();
+  } catch (err) {
+    // Deploys run the new code before the migration that adds ip_hash: insert without the limit meanwhile.
+    if (!String(err).includes("ip_hash")) throw err;
+    result = await env.DB.prepare(
+      `INSERT INTO houses (id, event, event_date, address, lat, lng, time_from, time_to, rules, note, edit_token_hash)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    ).bind(...values).run();
+  }
+  if (result.meta.changes === 0) {
+    throw new HttpError(429, `Sellelt võrgult on sellele õhtule juba lisatud ${MAX_PER_IP} maja. Rohkem ei saa lisada.`);
+  }
 
   return json({ id, editToken: token, eventDate: date }, 201);
 }
